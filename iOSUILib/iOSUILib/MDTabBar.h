@@ -50,6 +50,7 @@ IB_DESIGNABLE
 
 /// inset from the side (default: 8)
 @property(nonatomic, assign) CGFloat horizontalInset;
+@property(nonatomic, assign) CGFloat tabitemWidthLimit;
 
 @property(nonatomic) NSUInteger selectedIndex;
 @property(nonatomic, weak) id<MDTabBarDelegate> delegate;

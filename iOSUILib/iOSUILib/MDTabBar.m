@@ -43,6 +43,7 @@
 
 @property(nonatomic) UIColor *rippleColor;
 @property(nonatomic) UIColor *indicatorColor;
+@property (nonatomic) CGFloat tabitemWidthLimit;
 @property(nonatomic) NSMutableArray<UIView *> *tabs;
 - (CGRect)getSelectedSegmentFrame;
 - (void)setTextFont:(UIFont *)textFont withColor:(UIColor *)textColor;
@@ -140,6 +141,7 @@
                        atIndex:(NSUInteger)segment
                       animated:(BOOL)animated {
   [super insertSegmentWithTitle:title atIndex:segment animated:animated];
+    
   [self resizeItems];
   [self updateSegmentsList];
   [self addRippleLayers];
@@ -177,6 +179,11 @@
 - (void)setIndicatorColor:(UIColor *)color {
   _indicatorColor = color;
   indicatorView.backgroundColor = color;
+}
+
+- (void)setTabitemWidthLimit:(CGFloat)tabitemWidthLimit {
+    _tabitemWidthLimit = tabitemWidthLimit;
+    [self resizeItems];
 }
 
 - (void)setRippleColor:(UIColor *)rippleColor {
@@ -262,6 +269,8 @@
       CGFloat width = height / image.size.height * image.size.width;
       itemSize = CGSizeMake(width, height);
     }
+      if(_tabitemWidthLimit > 0 && itemSize.width > _tabitemWidthLimit)
+          itemSize = CGSizeMake(_tabitemWidthLimit, ktabbarHeight);
 
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
       itemSize.width += kMDContentHorizontalPaddingIPad * 2;
@@ -334,6 +343,18 @@
   }
 
   [self moveIndicatorToFrame:frame withAnimated:animated];
+}
+
+- (void)setMultiline {
+    [self.subviews enumerateObjectsUsingBlock:^(UIView * obj, NSUInteger idx, BOOL *stop) {
+        [obj.subviews enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+            if ([obj isKindOfClass:[UILabel class]]) {
+                UILabel *_tempLabel = (UILabel *)obj;
+                _tempLabel.frame = CGRectMake(0, 0, _tempLabel.frame.size.width, ktabbarHeight);
+                [_tempLabel setNumberOfLines:0];
+            }
+        }];     
+    }];
 }
 
 - (void)addRippleLayers {
@@ -453,12 +474,18 @@
   return self;
 }
 
+- (void)setTabitemWidthLimit:(CGFloat)tabitemWidthLimit {
+    _tabitemWidthLimit = tabitemWidthLimit;
+    segmentedControl.tabitemWidthLimit = _tabitemWidthLimit;
+}
+
 - (void)layoutSubviews {
   [super layoutSubviews];
     CGFloat h = 64.;
     if(self.bounds.size.height > 0)
         h = self.bounds.size.height;
   scrollView.frame = CGRectMake(0, 0, self.bounds.size.width, h);
+    [segmentedControl setMultiline];
   [scrollView setContentInset:UIEdgeInsetsMake(0, self.horizontalInset, 0,
                                                self.horizontalInset)];
   [scrollView setContentSize:segmentedControl.bounds.size];
@@ -495,6 +522,7 @@
   [self setTextFont:[UIFontHelper robotoFontWithName:@"roboto-medium" size:14]];
   [self setIndicatorColor:[UIColor whiteColor]];
   [self setRippleColor:[UIColor whiteColor]];
+    
 }
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
@@ -562,6 +590,7 @@
   }
 
   self.selectedIndex = 0;
+    [segmentedControl setMultiline];
 }
 
 - (void)insertItem:(id)item atIndex:(NSUInteger)index animated:(BOOL)animated {
