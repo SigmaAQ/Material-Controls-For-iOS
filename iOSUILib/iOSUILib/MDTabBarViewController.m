@@ -22,6 +22,8 @@
 
 #import "MDTabBarViewController.h"
 
+#define kMDTabBarHeight 64.
+
 @interface MDTabBarViewController () <
     MDTabBarDelegate, UIPageViewControllerDelegate,
     UIPageViewControllerDataSource, UIScrollViewDelegate>

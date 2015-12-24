@@ -61,13 +61,13 @@
 - (void)initContent {
   tabBarViewController = [[MDTabBarViewController alloc] initWithDelegate:self];
   NSArray *names = @[
-    @"TAB ONE",
+    @"TAB ONE long line",
     @"TWO",
-    @"TAB THREE",
+    @"TAB THREE long line",
     @"FOUR",
-    @"FIVE",
+    @"FIVE even more long line. Longest line in fact.",
     @"SIX",
-    @"SEVEN",
+    @"SEVEN long line long line",
     @"EIGHT",
     @"NINE",
     @"TEN"

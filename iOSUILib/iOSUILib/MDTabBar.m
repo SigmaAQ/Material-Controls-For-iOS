@@ -53,13 +53,33 @@
   UIView *beingTouchedView;
   UIFont *font;
   MDTabBar *tabBar;
+    CGFloat ktabbarHeight;
 }
 
-- (instancetype)initWithTabBar:(MDTabBar *)bar {
+//- (instancetype)initWithTabBar:(MDTabBar *)bar  {
+//    if (self = [super init]) {
+//        _tabs = [NSMutableArray array];
+//        ktabbarHeight = 48.;
+//        indicatorView = [[UIView alloc]
+//                         initWithFrame:CGRectMake(0, ktabbarHeight - kMDIndicatorHeight, 0,
+//                                                  kMDIndicatorHeight)];
+//        indicatorView.tag = NSIntegerMax;
+//        [self addSubview:indicatorView];
+//        [self addTarget:self
+//                 action:@selector(selectionChanged:)
+//       forControlEvents:UIControlEventValueChanged];
+//        tabBar = bar;
+//    }
+//    
+//    return self;
+//}
+
+- (instancetype)initWithTabBar:(MDTabBar *)bar barHeight:(CGFloat)tabbarHeight {
   if (self = [super init]) {
     _tabs = [NSMutableArray array];
+      ktabbarHeight = tabbarHeight;
     indicatorView = [[UIView alloc]
-        initWithFrame:CGRectMake(0, kMDTabBarHeight - kMDIndicatorHeight, 0,
+        initWithFrame:CGRectMake(0, ktabbarHeight - kMDIndicatorHeight, 0,
                                  kMDIndicatorHeight)];
     indicatorView.tag = NSIntegerMax;
     [self addSubview:indicatorView];
@@ -269,7 +289,7 @@
     }
   }
 
-  self.frame = CGRectMake(0, 0, segmentedControlWidth, kMDTabBarHeight);
+  self.frame = CGRectMake(0, 0, segmentedControlWidth, ktabbarHeight);
 }
 
 - (NSArray *)getSegmentList {
@@ -435,7 +455,10 @@
 
 - (void)layoutSubviews {
   [super layoutSubviews];
-  scrollView.frame = CGRectMake(0, 0, self.bounds.size.width, kMDTabBarHeight);
+    CGFloat h = 64.;
+    if(self.bounds.size.height > 0)
+        h = self.bounds.size.height;
+  scrollView.frame = CGRectMake(0, 0, self.bounds.size.width, h);
   [scrollView setContentInset:UIEdgeInsetsMake(0, self.horizontalInset, 0,
                                                self.horizontalInset)];
   [scrollView setContentSize:segmentedControl.bounds.size];
@@ -444,8 +467,13 @@
 #pragma mark Private methods
 - (void)initContent {
   self.horizontalInset = 8;
+    
+    CGFloat h = 64.;
+    if(self.bounds.size.height > 0)
+        h = self.bounds.size.height;
+    scrollView.frame = CGRectMake(0, 0, self.bounds.size.width, h);
 
-  segmentedControl = [[MDSegmentedControl alloc] initWithTabBar:self];
+  segmentedControl = [[MDSegmentedControl alloc] initWithTabBar:self barHeight:h];
   [segmentedControl setTintColor:[UIColor clearColor]];
 
   scrollView = [[UIScrollView alloc] init];
